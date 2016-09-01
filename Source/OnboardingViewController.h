@@ -51,13 +51,14 @@
 /**
  * @brief Determines whether or not the skip button will fade away on the last page. The default value of this property is NO.
  */
-@property (nonatomic) BOOL fadeSkipButtonOnLastPage;
+@property (nonatomic) BOOL fadeButtonsOnLastPage;
 
 
 /**
  * @brief Determines whether or not the ship button will be shown. The default value of this property is NO.
  */
-@property (nonatomic) BOOL allowSkipping;
+@property (nonatomic) BOOL showLeftButton;
+@property (nonatomic) BOOL showRightButton;
 
 
 /**
@@ -81,7 +82,9 @@
 /**
  * @brief The skip button that allows users to skip onboarding anytime.
  */
-@property (nonatomic, strong) UIButton *skipButton;
+@property (nonatomic, strong) UIButton *rightButton;
+
+@property (nonatomic, strong) UIButton *leftButton;
 
 
 /**

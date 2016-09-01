@@ -94,10 +94,11 @@ static NSString * const kSkipButtonText = @"Skip";
     self.shouldBlurBackground = NO;
     self.shouldFadeTransitions = NO;
     self.fadePageControlOnLastPage = NO;
-    self.fadeSkipButtonOnLastPage = NO;
+    self.fadeButtonsOnLastPage = NO;
     self.swipingEnabled = YES;
-    
-    self.allowSkipping = NO;
+
+    self.showRightButton = NO;
+    self.showLeftButton = NO;
     self.skipHandler = ^{};
     
     // Create the initial exposed components so they can be customized
@@ -105,10 +106,13 @@ static NSString * const kSkipButtonText = @"Skip";
     self.pageControl.numberOfPages = self.viewControllers.count;
     self.pageControl.userInteractionEnabled = NO;
 
-    self.skipButton = [UIButton new];
-    [self.skipButton setTitle:kSkipButtonText forState:UIControlStateNormal];
-    [self.skipButton addTarget:self action:@selector(handleSkipButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-    self.skipButton.titleLabel.adjustsFontSizeToFitWidth = YES;
+    self.rightButton = [UIButton new];
+    [self.rightButton setTitle:@"Next" forState:UIControlStateNormal];
+    self.rightButton.titleLabel.adjustsFontSizeToFitWidth = YES;
+
+    self.leftButton = [UIButton new];
+    [self.leftButton setTitle:@"Skip" forState:UIControlStateNormal];
+    self.leftButton.titleLabel.adjustsFontSizeToFitWidth = YES;
     
     return self;
 }
@@ -147,7 +151,8 @@ static NSString * const kSkipButtonText = @"Skip";
 
     self.pageVC.view.frame = self.view.frame;
     self.moviePlayerController.view.frame = self.view.frame;
-    self.skipButton.frame = CGRectMake(CGRectGetMaxX(self.view.frame) - kSkipButtonWidth, CGRectGetMaxY(self.view.frame) - self.underPageControlPadding - kSkipButtonHeight, kSkipButtonWidth, kSkipButtonHeight);
+    self.rightButton.frame = CGRectMake(CGRectGetMaxX(self.view.frame) - kSkipButtonWidth, CGRectGetMaxY(self.view.frame) - self.underPageControlPadding - kSkipButtonHeight, kSkipButtonWidth, kSkipButtonHeight);
+    self.leftButton.frame = CGRectMake(CGRectGetMinX(self.view.frame), CGRectGetMaxY(self.view.frame) - self.underPageControlPadding - kSkipButtonHeight, kSkipButtonWidth, kSkipButtonHeight);
     self.pageControl.frame = CGRectMake(0, CGRectGetMaxY(self.view.frame) - self.underPageControlPadding - kPageControlHeight, self.view.frame.size.width, kPageControlHeight);
 }
 
@@ -221,8 +226,12 @@ static NSString * const kSkipButtonText = @"Skip";
     [self.view addSubview:self.pageControl];
     
     // if we allow skipping, setup the skip button
-    if (self.allowSkipping) {
-        [self.view addSubview:self.skipButton];
+    if (self.showLeftButton) {
+        [self.view addSubview:self.leftButton];
+    }
+
+    if (self.showRightButton) {
+        [self.view addSubview:self.rightButton];
     }
     
     // if we want to fade the transitions, we need to tap into the underlying scrollview
@@ -362,13 +371,15 @@ static NSString * const kSkipButtonText = @"Skip";
     }
 
     // fade the skip button to and from the last page
-    if (self.fadeSkipButtonOnLastPage) {
+    if (self.fadeButtonsOnLastPage) {
         if (transitioningToLastPage) {
-            self.skipButton.alpha = percentCompleteInverse;
+            self.leftButton.alpha = percentCompleteInverse;
+            self.rightButton.alpha = percentCompleteInverse;
         }
 
         else if (transitioningFromLastPage) {
-            self.skipButton.alpha = percentComplete;
+            self.leftButton.alpha = percentComplete;
+            self.rightButton.alpha = percentComplete;
         }
     }
 }
