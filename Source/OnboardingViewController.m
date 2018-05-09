@@ -149,11 +149,16 @@ static NSString * const kSkipButtonText = @"Skip";
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
 
+    CGFloat safeUnderPageControlPadding = self.underPageControlPadding;
+    if (@available(iOS 11.0, *)) {
+        safeUnderPageControlPadding += [self.view safeAreaInsets].bottom;
+    }
+
     self.pageVC.view.frame = self.view.frame;
     self.moviePlayerController.view.frame = self.view.frame;
-    self.rightButton.frame = CGRectMake(CGRectGetMaxX(self.view.frame) - kSkipButtonWidth, CGRectGetMaxY(self.view.frame) - self.underPageControlPadding - kSkipButtonHeight, kSkipButtonWidth, kSkipButtonHeight);
-    self.leftButton.frame = CGRectMake(CGRectGetMinX(self.view.frame), CGRectGetMaxY(self.view.frame) - self.underPageControlPadding - kSkipButtonHeight, kSkipButtonWidth, kSkipButtonHeight);
-    self.pageControl.frame = CGRectMake(0, CGRectGetMaxY(self.view.frame) - self.underPageControlPadding - kPageControlHeight, self.view.frame.size.width, kPageControlHeight);
+    self.rightButton.frame = CGRectMake(CGRectGetMaxX(self.view.frame) - kSkipButtonWidth, CGRectGetMaxY(self.view.frame) - safeUnderPageControlPadding - kSkipButtonHeight, kSkipButtonWidth, kSkipButtonHeight);
+    self.leftButton.frame = CGRectMake(CGRectGetMinX(self.view.frame), CGRectGetMaxY(self.view.frame) - safeUnderPageControlPadding - kSkipButtonHeight, kSkipButtonWidth, kSkipButtonHeight);
+    self.pageControl.frame = CGRectMake(0, CGRectGetMaxY(self.view.frame) - safeUnderPageControlPadding - kPageControlHeight, self.view.frame.size.width, kPageControlHeight);
 }
 
 - (void)generateView {
